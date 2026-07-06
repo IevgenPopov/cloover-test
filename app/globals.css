@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --background: #F6FFFD;
+        --foreground: #0F172A;
+
+        /* UI palette */
+        --primary: #0EA5A4;       /* main CTA */
+        --primary-dark: #0B9A96;  /* hover / gradient end */
+        --accent: #06B6D4;        /* secondary accent */
+        --muted: #94A3B8;         /* subdued text / borders */
+        --surface: #ffffff;       /* cards, panels */
+    }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
