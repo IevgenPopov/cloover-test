@@ -1,5 +1,19 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Implemented Features
+
+### techstack
+nextjs 13, typescript, tailwindcss, prisma, sqlite, jest, playwright
+
+### Features
+- User registration and login with JWT authentication
+- Admin and user roles with access control
+- Quotes list page with filtering for admin users
+- Quote detail page with access control for admin and user roles
+- swagger docs page auto-rendered from OpenAPI spec
+- unit tests
+- e2e tests for sign-in, quote creation, and result panel rendering
+
 ## Getting Started
 
 Install dependencies and create the Prisma SQLite database:
@@ -9,7 +23,7 @@ npx prisma migrate dev
 ```
 
 The seed script creates demo user and admin credentials. It is done automatically but you could
-rerun it using the command below. Check the `prisma/seed.ts` file for the credentials.
+rerun it using the command below. Check the `prisma/seed.js` file for the credentials.
 ```bash
 npm run prisma:seed
 ```  
@@ -58,3 +72,4 @@ Current unit tests coverage includes:
 - `GET /api/openapi` OpenAPI spec output for the docs page
 - `app/quotes/page.tsx` admin filtering, detail links, and empty state behavior
 - `app/quotes/[id]/page.tsx` detail page access control and back-link behavior
+
