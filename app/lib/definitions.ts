@@ -6,9 +6,20 @@ export type  Quote = {
     band: 'A' | 'B' | 'C';
 }
 
-export type User = {
-    id: number;
-    username: string;
+export type StoredUser = {
+    id: string;
+    name: string;
     email: string;
-    password: string;
-}
+    salt: string;
+    passwordHash: string;
+};
+
+export type PublicUser = {
+    id: string;
+    name: string;
+    email: string;
+};
+
+export type AuthStoreGlobal = typeof globalThis & {
+    __clooverDemoSeeded?: Promise<void>;
+};

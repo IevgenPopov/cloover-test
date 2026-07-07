@@ -2,14 +2,12 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First run the docker compose file:
+Install dependencies and create the Prisma SQLite database:
 
 ```bash
-docker compose up -d
+npx prisma migrate dev
 ```     
-The seeded data is in the `db/init` folder.
-
-Second, run the development server:
+Then run the development server:
 
 ```bash
 npm run dev
@@ -22,6 +20,3 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-

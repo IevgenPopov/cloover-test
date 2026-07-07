@@ -1,7 +1,16 @@
 import Header from "@/app/components/Header";
+import { authOptions } from "@/app/lib/auth";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+export default async function Home() {
+    const session = await getServerSession(authOptions);
+
+    if (session?.user) {
+        redirect("/quotes");
+    }
+
     return (
         <>
             <Header />
@@ -16,11 +25,11 @@ export default function Home() {
                 </p>
 
                 <div className="mt-10 flex justify-center gap-4 flex-wrap">
-                    <Link href="/register" className="inline-flex items-center px-6 py-3 rounded-lg text-white bg-gradient-to-br from-[#0B9A96] to-[#0EA5A4] hover:from-[#0A897F] hover:to-[#0B9A96]">
+                    <Link href="/register" className="inline-flex items-center px-6 py-3 rounded-lg text-white bg-linear-to-br from-[#0B9A96] to-[#0EA5A4] hover:from-[#0A897F] hover:to-[#0B9A96]">
                         Get started — Sign up
                     </Link>
 
-                    <Link href="/login" className="inline-flex items-center px-6 py-3 rounded-lg text-white bg-gradient-to-br from-[#0B9A96] to-[#0EA5A4] hover:from-[#0A897F] hover:to-[#0B9A96]">
+                    <Link href="/login" className="inline-flex items-center px-6 py-3 rounded-lg text-white bg-linear-to-br from-[#0B9A96] to-[#0EA5A4] hover:from-[#0A897F] hover:to-[#0B9A96]">
                         Sign in
                     </Link>
                 </div>
