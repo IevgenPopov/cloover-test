@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-
-const crypto = require("node:crypto");
-const { PrismaClient } = require("@prisma/client");
-const { PrismaBetterSqlite3 } = require("@prisma/adapter-better-sqlite3");
+import crypto from "node:crypto";
+import { PrismaClient } from "@prisma/client";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 
 const prisma = new PrismaClient({
   adapter: new PrismaBetterSqlite3({
@@ -10,11 +8,21 @@ const prisma = new PrismaClient({
   }),
 });
 
-function hashPassword(password, salt) {
+function hashPassword(password: string, salt: string) {
   return crypto.scryptSync(password, salt, 64).toString("hex");
 }
 
-async function upsertUser({ name, email, password, role }) {
+async function upsertUser({
+  name,
+  email,
+  password,
+  role,
+}: {
+  name: string;
+  email: string;
+  password: string;
+  role: "user" | "admin";
+}) {
   const salt = crypto.randomBytes(16).toString("hex");
   const passwordHash = hashPassword(password, salt);
 

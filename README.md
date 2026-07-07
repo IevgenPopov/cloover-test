@@ -24,7 +24,7 @@ npx prisma migrate dev
 ```
 
 The seed script creates demo user and admin credentials.
-Run it using the command below. Check the `prisma/seed.js` file for the credentials.
+Run it using the command below. Check the `prisma/seed.ts` file for the credentials.
 ```bash
 npm run prisma:seed
 ```  
@@ -73,4 +73,3 @@ Current unit tests coverage includes:
 - `GET /api/openapi` OpenAPI spec output for the docs page
 - `app/quotes/page.tsx` admin filtering, detail links, and empty state behavior
 - `app/quotes/[id]/page.tsx` detail page access control and back-link behavior
-
