@@ -23,3 +23,17 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Testing
+
+Run the Jest suite with:
+
+```bash
+npm test
+```
+
+Current unit tests coverage includes:
+
+- `app/lib/quote-pricing.ts` helper functions and quote calculation logic
+- `POST /api/quotes` request validation, unauthorized access, and success behavior
+- `POST /api/auth/register` success and error handling
