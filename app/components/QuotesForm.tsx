@@ -3,6 +3,7 @@
 import type {FormEvent, ReactNode} from "react";
 import {useMemo, useState} from "react";
 import type {QuoteFormState, QuoteResult, SessionUser} from "@/app/lib/definitions";
+import { validateQuoteForm, type QuoteFormErrors } from "@/app/lib/quotes-validation";
 
 const initialState = (user: SessionUser): QuoteFormState => ({
   fullName: user.name ?? "",
@@ -15,7 +16,7 @@ const initialState = (user: SessionUser): QuoteFormState => ({
 
 export default function QuotesForm({ user }: { user: SessionUser }) {
   const [form, setForm] = useState<QuoteFormState>(() => initialState(user));
-  const [errors, setErrors] = useState<Partial<Record<keyof QuoteFormState, string>>>({});
+  const [errors, setErrors] = useState<QuoteFormErrors>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<QuoteResult | null>(null);
@@ -29,38 +30,11 @@ export default function QuotesForm({ user }: { user: SessionUser }) {
   }
 
   function validate() {
-    const nextErrors: Partial<Record<keyof QuoteFormState, string>> = {};
-
-    if (!form.fullName.trim()) {
-      nextErrors.fullName = "Full name is required.";
-    }
-
-    if (!form.email.trim()) {
-      nextErrors.email = "Email is required.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
-      nextErrors.email = "Enter a valid email address.";
-    }
-
-    if (!form.address.trim()) {
-      nextErrors.address = "Address is required.";
-    }
-
-    if (!form.monthlyConsumptionKwh.trim()) {
-      nextErrors.monthlyConsumptionKwh = "Monthly consumption is required.";
-    } else if (!Number.isFinite(monthlyConsumption) || monthlyConsumption <= 0) {
-      nextErrors.monthlyConsumptionKwh = "Enter a positive number.";
-    }
-
-    if (!form.systemSizeKw.trim()) {
-      nextErrors.systemSizeKw = "System size is required.";
-    } else if (!Number.isFinite(systemSize) || systemSize <= 0) {
-      nextErrors.systemSizeKw = "Enter a positive number.";
-    }
-
-    if (form.downPayment.trim() && (!Number.isFinite(downPayment) || downPayment < 0)) {
-      nextErrors.downPayment = "Enter a valid non-negative number.";
-    }
-
+    const nextErrors = validateQuoteForm(form, {
+      monthlyConsumptionKwh: monthlyConsumption,
+      systemSizeKw: systemSize,
+      downPayment,
+    });
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
   }

@@ -3,9 +3,19 @@ import { authOptions } from "@/app/lib/auth";
 import { getQuotesForUser } from "@/app/lib/quote-store";
 import type { UserRole } from "@/app/lib/definitions";
 import { getServerSession } from "next-auth";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
-export default async function QuotesPage() {
+type QuotesSearchParams = {
+  user?: string;
+  email?: string;
+};
+
+type QuotesPageProps = {
+  searchParams?: Promise<QuotesSearchParams>;
+};
+
+export default async function QuotesPage({ searchParams }: QuotesPageProps) {
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
@@ -13,7 +23,20 @@ export default async function QuotesPage() {
   }
 
   const user = session.user as typeof session.user & { role: UserRole };
-  const quotes = await getQuotesForUser(user.id, user.role === "admin");
+  const resolvedSearchParams = (await searchParams) ?? {};
+  const userFilter = normalizedFilter(resolvedSearchParams.user);
+  const emailFilter = normalizedFilter(resolvedSearchParams.email);
+  const isAdmin = user.role === "admin";
+  const quotes = await getQuotesForUser(user.id, isAdmin);
+  const queryString = buildQueryString(resolvedSearchParams);
+
+  const filteredQuotes = isAdmin
+    ? quotes.filter((quote) => {
+        const matchesUser = !userFilter || quote.userName.toLowerCase().includes(userFilter);
+        const matchesEmail = !emailFilter || quote.userEmail.toLowerCase().includes(emailFilter);
+        return matchesUser && matchesEmail;
+      })
+    : quotes;
 
   return (
     <>
@@ -32,21 +55,64 @@ export default async function QuotesPage() {
             </p>
           </div>
 
-          <a
-            href="/quote"
-            className="inline-flex items-center rounded-md bg-linear-to-br from-[#0B9A96] to-[#0EA5A4] px-4 py-2 text-sm font-medium text-white hover:from-[#0A897F] hover:to-[#0B9A96]"
-          >
-            New quote
-          </a>
+          <div className="flex flex-wrap items-center gap-3">
+            {isAdmin ? (
+              <Link
+                href="/quotes"
+                className="inline-flex items-center rounded-md border border-[#c7ece8] px-4 py-2 text-sm font-medium text-[#0B9A96] hover:bg-[#f1fbfa] dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+              >
+                Clear filters
+              </Link>
+            ) : null}
+            <a
+              href="/quote"
+              className="inline-flex items-center rounded-md bg-linear-to-br from-[#0B9A96] to-[#0EA5A4] px-4 py-2 text-sm font-medium text-white hover:from-[#0A897F] hover:to-[#0B9A96]"
+            >
+              New quote
+            </a>
+          </div>
         </div>
 
-        {quotes.length === 0 ? (
+        {isAdmin ? (
+          <form method="get" className="mb-6 grid gap-3 rounded-2xl border border-[#d8efed] bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:grid-cols-[1fr_1fr_auto]">
+            <label className="grid gap-2 text-sm">
+              <span className="font-medium text-slate-700 dark:text-slate-300">User</span>
+              <input
+                name="user"
+                defaultValue={resolvedSearchParams.user ?? ""}
+                placeholder="Filter by user name"
+                className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-0 placeholder:text-slate-400 focus:border-[#0B9A96] dark:border-slate-700 dark:bg-slate-950 dark:text-white"
+              />
+            </label>
+            <label className="grid gap-2 text-sm">
+              <span className="font-medium text-slate-700 dark:text-slate-300">Email</span>
+              <input
+                name="email"
+                defaultValue={resolvedSearchParams.email ?? ""}
+                placeholder="Filter by email"
+                className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-0 placeholder:text-slate-400 focus:border-[#0B9A96] dark:border-slate-700 dark:bg-slate-950 dark:text-white"
+              />
+            </label>
+            <div className="flex items-end">
+              <button
+                type="submit"
+                className="inline-flex items-center rounded-md bg-linear-to-br from-[#0B9A96] to-[#0EA5A4] px-4 py-2 text-sm font-medium text-white hover:from-[#0A897F] hover:to-[#0B9A96]"
+              >
+                Apply
+              </button>
+            </div>
+          </form>
+        ) : null}
+
+        {filteredQuotes.length === 0 ? (
           <div className="rounded-2xl border border-[#d8efed] bg-white p-6 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
-            No quotes have been saved yet.
+            {quotes.length === 0
+              ? "No quotes have been saved yet."
+              : "No quotes match the current filters."}
           </div>
         ) : (
           <div className="grid gap-4">
-            {quotes.map((quote) => (
+            {filteredQuotes.map((quote) => (
               <article
                 key={quote.id}
                 className="rounded-2xl border border-[#d8efed] bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
@@ -67,6 +133,15 @@ export default async function QuotesPage() {
                     <p>{new Date(quote.date).toLocaleDateString()}</p>
                     <p>{new Date(quote.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
                   </div>
+                </div>
+
+                <div className="mt-4">
+                  <Link
+                    href={queryString ? `/quotes/${quote.id}?${queryString}` : `/quotes/${quote.id}`}
+                    className="inline-flex items-center rounded-md border border-[#c7ece8] px-3 py-2 text-sm font-medium text-[#0B9A96] hover:bg-[#f1fbfa] dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+                  >
+                    View quote
+                  </Link>
                 </div>
 
                 <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -94,4 +169,23 @@ function Info({ label, value }: { label: string; value: string }) {
       <p className="mt-1 text-sm font-medium text-slate-900 dark:text-white">{value}</p>
     </div>
   );
+}
+
+function normalizedFilter(value?: string) {
+  const trimmed = value?.trim().toLowerCase();
+  return trimmed && trimmed.length > 0 ? trimmed : "";
+}
+
+function buildQueryString(params: QuotesSearchParams) {
+  const query = new URLSearchParams();
+
+  if (params.user?.trim()) {
+    query.set("user", params.user.trim());
+  }
+
+  if (params.email?.trim()) {
+    query.set("email", params.email.trim());
+  }
+
+  return query.toString();
 }
