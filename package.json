@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "jest",
+    "test:e2e": "playwright test",
     "postinstall": "prisma generate",
     "prisma:seed": "node prisma/seed.js"
   },
@@ -20,6 +21,7 @@
     "react": "19.2.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@tailwindcss/postcss": "^4",
     "@types/jest": "^30.0.0",
     "@types/node": "^20",
@@ -29,6 +31,7 @@
     "eslint-config-next": "16.2.10",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
+    "playwright": "^1.61.1",
     "prisma": "^7.8.0",
     "react-dom": "19.2.4",
     "swagger-ui-dist": "^5.32.8",

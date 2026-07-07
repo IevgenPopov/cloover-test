@@ -40,6 +40,15 @@ Run the Jest suite with:
 npm test
 ```
 
+Run the Playwright end-to-end suite with:
+
+```bash
+npm run test:e2e
+```
+
+The E2E flow covers sign-in, quote creation, and the rendered result panel. `test:e2e` starts the
+local dev server automatically and uses the seeded demo credentials.
+
 Current unit tests coverage includes:
 
 - `app/lib/quote-pricing.ts` helper functions and quote calculation logic

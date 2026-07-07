@@ -76,7 +76,7 @@ export default function LoginForm({
           throw new Error(result.error);
         }
 
-        router.push(result?.url ?? "/quotes");
+        router.push("/quotes");
       } else {
         const result = await signIn("credentials", {
           redirect: false,
@@ -89,7 +89,7 @@ export default function LoginForm({
           throw new Error("Invalid credentials");
         }
 
-        router.push(result?.url ?? "/quotes");
+        router.push("/quotes");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : isSignup ? "Signup failed" : "Login failed");
