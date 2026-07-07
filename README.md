@@ -23,8 +23,8 @@ Install dependencies and create the Prisma SQLite database:
 npx prisma migrate dev
 ```
 
-The seed script creates demo user and admin credentials. It is done automatically but you could
-rerun it using the command below. Check the `prisma/seed.js` file for the credentials.
+The seed script creates demo user and admin credentials.
+Run it using the command below. Check the `prisma/seed.js` file for the credentials.
 ```bash
 npm run prisma:seed
 ```  
