@@ -10,11 +10,13 @@ model User {
   id           String    @id @default(uuid())
   name         String
   email        String    @unique
+  role         String    @default("user")
   salt         String
   passwordHash String
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   accounts     Account[]
+  quotes       Quote[]
 
   @@map("cloover_users")
 }
@@ -29,4 +31,19 @@ model Account {
 
   @@unique([provider, providerAccountId])
   @@map("cloover_accounts")
+}
+
+model Quote {
+  id          String   @id @default(uuid())
+  date        DateTime
+  systemSize  Float
+  price       Float
+  downPayment Float?
+  band        String
+  description String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("cloover_quotes")
 }

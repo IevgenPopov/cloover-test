@@ -8,7 +8,7 @@ export default function Header() {
 
     return (
         <header className="w-full bg-white/90 dark:bg-black/80 backdrop-blur sticky top-0 z-40 border-b">
-            <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
                 <Link href="/" className="flex items-center gap-3">
                     <div
                         className="w-11 h-11 rounded-lg bg-gradient-to-br from-[#0B9A96] to-[#0EA5A4] flex items-center justify-center text-white font-bold shadow">C
@@ -16,6 +16,14 @@ export default function Header() {
                     <span className="text-lg font-semibold text-gray-900 dark:text-white">Cloover</span>
                 </Link>
 
+                <nav className="hidden md:flex items-center gap-2 text-sm">
+                    <Link href="/quotes" className="rounded-md px-3 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-slate-800">
+                        Quotes
+                    </Link>
+                    <Link href="/quote" className="rounded-md px-3 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-slate-800">
+                        New quote
+                    </Link>
+                </nav>
 
                 {/* Mobile menu button */}
                 <div className="md:hidden">

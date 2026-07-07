@@ -6,7 +6,10 @@ Install dependencies and create the Prisma SQLite database:
 
 ```bash
 npx prisma migrate dev
+npm run prisma:seed
 ```     
+The seed script creates the demo user and demo admin account.
+
 Then run the development server:
 
 ```bash

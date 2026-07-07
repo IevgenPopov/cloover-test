@@ -1,6 +1,7 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { seedDemoUser, verifyUser } from "@/app/lib/auth-store";
+import type { UserRole } from "@/app/lib/definitions";
 
 void seedDemoUser().catch(() => undefined);
 
@@ -35,16 +36,18 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.role = "role" in user ? (user.role === "admin" ? "admin" : "user") : "user";
       }
 
       return token;
     },
-      async session({ session, token }) {
+    async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id ?? token.sub ?? session.user.id;
+        session.user.role = (token.role as UserRole | undefined) ?? "user";
       }
 
       return session;
     },
-  }
+  },
 };
